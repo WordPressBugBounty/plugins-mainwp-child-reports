@@ -3,6 +3,11 @@
 
 namespace WP_MainWP_Stream;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // Load Carbon to Handle dates much easier
 if ( ! class_exists( 'Carbon\Carbon' ) ) {
 	require_once wp_mainwp_stream_get_instance()->locations['inc_dir'] . 'lib/Carbon.php';
@@ -42,9 +47,9 @@ class Date_Interval {
 
 		if ( empty( $timezone ) ) {
 			$gmt_offset = (int) get_option( 'gmt_offset' );
-			$timezone   = timezone_name_from_abbr( null, $gmt_offset * 3600, true );
+			$timezone   = timezone_name_from_abbr( '', $gmt_offset * 3600, true );
 			if ( false === $timezone ) {
-				$timezone = timezone_name_from_abbr( null, $gmt_offset * 3600, false );
+				$timezone = timezone_name_from_abbr( '', $gmt_offset * 3600, false );
 			}
 			if ( false === $timezone ) {
 				$timezone = null;

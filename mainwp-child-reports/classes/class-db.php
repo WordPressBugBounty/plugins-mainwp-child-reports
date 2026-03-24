@@ -3,6 +3,11 @@
 
 namespace WP_MainWP_Stream;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * Class DB.
  *
@@ -91,6 +96,9 @@ class DB {
 		 * @param array $record
 		 */
 		do_action( 'wp_mainwp_stream_record_inserted', $record_id, $record );
+
+		// Invalidate contexts/connectors cache after new record insertion.
+		wp_cache_delete( 'mainwp_stream_contexts_connectors' );
 
 		return absint( $record_id );
 	}

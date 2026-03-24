@@ -5,6 +5,12 @@ namespace WP_MainWP_Stream;
 
 use JMS\Serializer\Annotation\Type;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+
 /**
  * Class List_Table.
  * @package WP_MainWP_Stream
@@ -73,7 +79,8 @@ class List_Table extends \WP_List_Table {
      */
     public function extra_tablenav($which ) {
 		if ( 'top' === $which ) {
-			echo $this->filters_form(); // xss ok
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- filters_form() returns HTML with all content properly escaped: esc_html__(), esc_attr(), esc_url() throughout.
+			echo $this->filters_form();
 		}
 	}
 
@@ -132,7 +139,7 @@ class List_Table extends \WP_List_Table {
 		}
 		// Directly checking the user meta; to check whether user has changed screen option or not.
 		$hidden = $this->plugin->admin->get_user_meta( $user->ID, 'manage' . $this->screen->id . 'columnshidden', true );
-		
+
 		// If user meta is not found; add the default hidden column 'id'.
 		if ( ! $hidden ) {
 			$hidden = array( 'id' );
@@ -691,7 +698,7 @@ class List_Table extends \WP_List_Table {
      */
     public function filters_form() {
 		$filters = $this->get_filters();
-		
+
 		$filters_string  = sprintf( '<input type="hidden" name="page" value="%s" />', $this->plugin->admin->records_page_slug );
 		$filters_string .= sprintf( '<span class="filter_info hidden">%s</span>', esc_html__( 'Show filter controls via the screen options tab above.', 'mainwp-child-reports' ) );
 
@@ -1013,12 +1020,14 @@ class List_Table extends \WP_List_Table {
 		$url = self_admin_url( $this->plugin->admin->admin_parent_page );
 
 		echo '<form method="get" action="' . esc_url( $url ) . '" id="record-filter-form">';
-		echo $this->filter_search(); // xss ok
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- filter_search() returns HTML with properly escaped content: esc_attr() for values and esc_attr__() for text.
+		echo $this->filter_search();
 		parent::display();
 		echo '</form>';
 
 		echo '<form method="get" action="' . esc_url( $url ) . '" id="record-actions-form">';
-		echo $this->record_actions_form(); // xss ok
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- record_actions_form() returns HTML with all content properly escaped: esc_attr(), esc_attr__(), and wp_nonce_field() throughout.
+		echo $this->record_actions_form();
 		echo '</form>';
 	}
 
@@ -1034,7 +1043,7 @@ class List_Table extends \WP_List_Table {
 			$class_string = ' class="' . esc_attr( join( ' ', $classes ) ) . '"';
 		}
 
-		echo sprintf( '<tr%s>', $class_string ); // xss ok
+		echo wp_kses_post( sprintf( '<tr%s>', $class_string ) );
 		$this->single_row_columns( $item );
 		echo '</tr>';
 	}

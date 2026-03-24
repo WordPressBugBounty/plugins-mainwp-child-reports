@@ -3,6 +3,11 @@
 
 namespace WP_MainWP_Stream;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * Class Plugin.
  *
@@ -200,6 +205,8 @@ class Plugin {
 	public function get_version() {
 		return self::VERSION;
 	}
+
+
 
 	/**
 	 * Change plugin database driver in case driver plugin loaded after stream.
